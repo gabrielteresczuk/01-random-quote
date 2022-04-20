@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script src="https://unpkg.com/react-transition-group/dist/react-transition-group.js"></script>
+
+    <script src="https://kit.fontawesome.com/4eec790ce9.js" crossorigin="anonymous"></script>
+
+    
+
+    <link rel="stylesheet" href="style.css">    
+
+    
+
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="body"></div>
+
+    <script type="text/babel" >
+
+let colors = [
+    "#F44336","#E91E63","#9C27B0","#673AB7","#3F51B5","#2196F3","#03A9F4","#00BCD4","#26A69A","#4CAF50","#FFC107"
+];        
+let randomColor = 0;
+
+class Quote extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        let link= 'https://twitter.com/intent/tweet?hashtags=quotes&related=freecodecamp&text=' +
+                    encodeURIComponent('"' + this.props.quote + '" ' + this.props.author);
+        return(
+            <main id="quote-box">
+                <div id="signo"><i className="fa-solid fa-quote-left" ></i></div>
+                <p id="text">{this.props.quote}
+                </p>
+                
+                <p id="author">- {this.props.author}</p>
+                
+                <div className="botones">
+                <a href={link} target="_top" id="tweet-quote" className="btn"> <i className="fa-brands fa-twitter"></i> </a>
+                <button id="new-quote" className="btn" onClick={this.props.handleClick}>New Quote</button>
+                </div>
+            </main>
+        );
+    }
+}        
+
+const url = 'https://randomuser.me/api/?results=10';
+
+
+class App extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            quote:"quote",
+            author:"author"
+        };
+    this.handleClick = this.handleClick.bind(this);
+    }
+
+    componentDidMount() {
+
+    randomColor = Math.floor(Math.random() * colors.length);
+
+    document.documentElement.style.setProperty('--first-color',colors[randomColor]);
+
+
+    fetch("https://type.fit/api/quotes")
+      .then(res => res.json())
+      .then(
+        (result) => {
+
+           let random = Math.floor(Math.random() * result.length-1);
+
+          this.setState({
+            quote:result[random]["text"],
+            author:result[random]["author"]
+          });
+        },
+        (error) => {
+          this.setState({
+            quote:"Error, No Quote",
+            author:"Error, No author"
+          });
+        }
+      )
+  }   
+
+    handleClick(){
+
+        randomColor = Math.floor(Math.random() * colors.length);
+
+        document.documentElement.style.setProperty('--first-color',colors[randomColor]);
+
+        fetch("https://type.fit/api/quotes")
+      .then(res => res.json())
+      .then(
+        (result) => {
+
+           let random = Math.floor(Math.random() * result.length-1);
+
+          this.setState({
+            quote:result[random]["text"],
+            author:result[random]["author"]
+          });
+        },
+        (error) => {
+          this.setState({
+            quote:"Error, No Quote",
+            author:"Error, No author"
+          });
+        }
+      )
+    }
+
+    render(){
+
+
+        return(
+
+            <Quote 
+            quote={this.state.quote} 
+            author={this.state.author}
+            handleClick={this.handleClick}/>
+
+        );
+
+    }
+}
+
+
+ReactDOM.render(<App />, document.getElementById('body'));
+
+    </script>
+    
+    
+</body>
+</html>
